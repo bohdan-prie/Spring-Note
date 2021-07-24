@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.AbstractTextContainer;
 import com.example.demo.entity.Note;
-import com.example.demo.service.impl.NoteService;
+import com.example.demo.service.TextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,46 +14,46 @@ public class NotesController {
 
     private final static String TEMP_USER_LOGIN = "999";
 
-    private final NoteService noteService;
+    private final TextService textService;
 
     @Autowired
-    public NotesController(NoteService noteService) {
-        this.noteService = noteService;
+    public NotesController(TextService textService) {
+        this.textService = textService;
     }
 
     @GetMapping(path = "/all")
-    public List<Note> getAll() {
-        return noteService.getAll(TEMP_USER_LOGIN);
+    public List<? extends AbstractTextContainer> getAll() {
+        return textService.getAll(TEMP_USER_LOGIN);
     }
 
     @GetMapping(path = "/sortedCreation")
-    public List<Note> sortedByCreation(){
-        return noteService.getSortedByCreation(TEMP_USER_LOGIN);
+    public List<? extends AbstractTextContainer> sortedByCreation(){
+        return textService.getSortedByCreation(TEMP_USER_LOGIN);
     }
 
     @GetMapping(params = {"q"})
-    public List<Note> searchByPattern(@RequestParam String q) {
-        return noteService.searchByPattern(TEMP_USER_LOGIN ,q);
+    public List<? extends AbstractTextContainer> searchByPattern(@RequestParam String q) {
+        return textService.searchByPattern(TEMP_USER_LOGIN ,q);
     }
 
     @PostMapping
     public String add() {
-        Note note = noteService.create(TEMP_USER_LOGIN);
-        return note.getId();
+        AbstractTextContainer textContainer = textService.create(TEMP_USER_LOGIN);
+        return textContainer.getId();
     }
 
     @PostMapping(params = {"action"})
     public void save(@RequestBody Note note) {
-        noteService.change(note, TEMP_USER_LOGIN);
+        textService.change(note, TEMP_USER_LOGIN);
     }
 
     @DeleteMapping
     public void deleteAll() {
-        noteService.deleteAll(TEMP_USER_LOGIN);
+        textService.deleteAll(TEMP_USER_LOGIN);
     }
 
     @DeleteMapping(params = {"id"})
     public void delete(@RequestParam String id) {
-        noteService.deleteById(id);
+        textService.deleteById(id);
     }
 }

@@ -57,6 +57,6 @@ public class NoteService implements TextService {
 
     @Override
     public List<Note> searchByPattern(String login, String pattern) {
-        return noteRepository.findByUser_LoginAndTitleContainingIgnoreCaseOrBodyContainingIgnoreCase(login, pattern, pattern);
+        return noteRepository.findByPattern(login, pattern, pattern);
     }
 }
