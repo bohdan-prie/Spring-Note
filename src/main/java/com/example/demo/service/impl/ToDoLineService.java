@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ToDoLineService implements TextService {
@@ -22,7 +23,7 @@ public class ToDoLineService implements TextService {
 
     @Override
     public void deleteAll(String login) {
-        repository.deleteAll();
+        repository.deleteAllByUserLogin(login);
     }
 
     @Override
@@ -65,6 +66,14 @@ public class ToDoLineService implements TextService {
 
     @Override
     public List<ToDoLine> searchByPattern(String login, String pattern) {
-        return repository.findByPattern(login, pattern, pattern);
+        List<ToDoLine> all = repository.findByUser_LoginOrderByTimeChange(login);
+        List<ToDoLine> withPattern = all
+                .stream()
+                .filter(toDoLine -> toDoLine.getTitle().toLowerCase().contains(pattern.toLowerCase()) ||
+                        toDoLine.getToDo()
+                                .stream()
+                                .anyMatch(toDo -> toDo.getBody().contains(pattern.toLowerCase())))
+                .collect(Collectors.toList());
+        return withPattern;
     }
 }
