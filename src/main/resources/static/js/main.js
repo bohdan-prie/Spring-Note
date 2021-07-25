@@ -171,16 +171,18 @@ function saveNote() {
 	var data;
 	var url = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
 
-	if (url == "notes/saveNote") {
+    var xhr = new XMLHttpRequest();
+
+	if (url == "notes") {
+	    xhr.open("POST", url + "/saveNote", true);
 		data = collectNoteData();
-	} else if (url == "toDos/saveToDo") {
+	} else if (url == "toDos") {
+	    xhr.open("POST", url + "/saveToDo", true);
 		data = collectToDoLineData();
 	}
 
 	var json = JSON.stringify(data);
 
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
 	xhr.send(json);
 
