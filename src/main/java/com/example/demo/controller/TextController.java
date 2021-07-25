@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.AbstractTextContainer;
 import com.example.demo.entity.Note;
+import com.example.demo.entity.ToDoLine;
 import com.example.demo.service.TextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,15 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/notes")
-public class NotesController {
+@RequestMapping(path = {"/notes", "/toDos"})
+public class TextController {
 
     private final static String TEMP_USER_LOGIN = "999";
 
     private final TextService textService;
 
     @Autowired
-    public NotesController(TextService textService) {
+    public TextController(TextService textService) {
         this.textService = textService;
     }
 
@@ -42,10 +43,20 @@ public class NotesController {
         return textContainer.getId();
     }
 
-    @PostMapping(params = {"action"})
-    public void save(@RequestBody Note note) {
+    @PostMapping(path = "/saveNote")
+    public void saveNote(@RequestBody Note note) {
         textService.change(note, TEMP_USER_LOGIN);
     }
+
+    @PostMapping(path = "/saveToDo")
+    public void saveToDoLine(@RequestBody ToDoLine toDoLine) {
+        textService.change(toDoLine, TEMP_USER_LOGIN);
+    }
+
+    /*@PostMapping()
+    public void saveNote (@RequestBody Note note){
+
+    }*/
 
     @DeleteMapping
     public void deleteAll() {

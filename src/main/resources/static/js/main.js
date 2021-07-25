@@ -1,6 +1,5 @@
-    var currentObj;
+var currentObj;
 var maxId = -1;
-var maxInnerId = -1;
 var currentToDo;
 
 function changeDisplay(id, action) {
@@ -78,7 +77,6 @@ function add() {
 }
 
 function setToDoToContainer(obj) {
-	maxInnerId = -1;
 	currentObj = obj;
 	document.getElementById('titleText').value = obj.children[0].children[0].children[0].textContent;
 	document.getElementById('format-container').children[2].innerHTML = '';
@@ -98,9 +96,7 @@ function setToDoToContainer(obj) {
 				+ removeAllTags(lastContainer.children[i].children[1].textContent)
 				+ '</span></div>';
 		textRedactor.insertAdjacentHTML('beforeend', toDo);
-		if (parseInt(lastContainer.children[i].id) > maxInnerId) {
-			maxInnerId = parseInt(lastContainer.children[i].id);
-		}
+
 	}
 }
 
@@ -114,12 +110,9 @@ function setCurrentTask(currentTask) {
 
 function addNewToDo() {
 	if (currentObj != null) {
-		maxInnerId += 1;
 		document.getElementById('noteText').insertAdjacentHTML(
 						'beforeend',
-						'<div onclick="setCurrentTask(this)"  id = "'
-								+ maxInnerId
-								+ '"><input class="checkbox" type="checkbox"><span class="formNote span_width" style="white-space: normal; display: inline-block; margin-bottom: 0%;" contenteditable></span></div>');
+						'<div onclick="setCurrentTask(this)"><input class="checkbox" type="checkbox"><span class="formNote span_width" style="white-space: normal; display: inline-block; margin-bottom: 0%;" contenteditable></span></div>');
 	}
 }
 
@@ -178,16 +171,16 @@ function saveNote() {
 	var data;
 	var url = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
 
-	if (url == "notes") {
+	if (url == "notes/saveNote") {
 		data = collectNoteData();
-	} else if (url == "toDos") {
+	} else if (url == "toDos/saveToDo") {
 		data = collectToDoLineData();
 	}
 
 	var json = JSON.stringify(data);
 
 	var xhr = new XMLHttpRequest();
-	xhr.open("POST", url + "?action=save", true);
+	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
 	xhr.send(json);
 
@@ -622,9 +615,6 @@ function showToDoLines(ToDoLines) {
 	for (var i = 0; i < ToDoLines.length; i++) {
 		addToDoLineToPage(ToDoLines[i].id, ToDoLines[i].title,
 				ToDoLines[i].toDo);
-		if (parseInt(ToDoLines[i].id) > maxId) {
-			maxId = parseInt(ToDoLines[i].id);
-		}
 	}
 }
 
