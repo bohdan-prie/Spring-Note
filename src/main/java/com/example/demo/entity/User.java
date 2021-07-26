@@ -1,7 +1,5 @@
 package com.example.demo.entity;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 
 import javax.persistence.*;
@@ -12,7 +10,6 @@ import java.util.List;
 @Table(name = "users")
 @Scope("session")
 public class User {
-    private static final Logger LOG = LogManager.getLogger(User.class.getName());
 
     @Id
     private String login;
@@ -21,6 +18,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Note> notes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ToDoLine> toDoLines = new ArrayList<>();
 
     public User(String login, String password) {
         this.changeLogin(login);
@@ -43,26 +43,30 @@ public class User {
         return notes;
     }
 
+    public List<ToDoLine> getToDoLines() {
+        return toDoLines;
+    }
+
+    public void setToDoLines(List<ToDoLine> toDoLines) {
+        if (toDoLines != null) {
+            this.toDoLines = toDoLines;
+        }
+    }
+
     public void setNotes(List<Note> notes) {
-        if (notes == null) {
-            LOG.debug("Notes list is null");
-        } else {
+        if (notes != null) {
             this.notes = notes;
         }
     }
 
     public void changeLogin(String login) {
-        if (login == null || login.isEmpty()) {
-            LOG.debug("Login is null or empty");
-        } else {
+        if (login != null && ! login.isEmpty()) {
             this.login = login;
         }
     }
 
     public void changePassword(String password) {
-        if (password == null || password.isEmpty()) {
-            LOG.debug("Password is null or empty");
-        } else {
+        if (password != null && !password.isEmpty()) {
             this.password = password;
         }
     }
