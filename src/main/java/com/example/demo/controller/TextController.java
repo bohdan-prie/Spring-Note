@@ -53,11 +53,6 @@ public class TextController {
         textService.change(toDoLine, TEMP_USER_LOGIN);
     }
 
-    /*@PostMapping()
-    public void saveNote (@RequestBody Note note){
-
-    }*/
-
     @DeleteMapping
     public void deleteAll() {
         textService.deleteAll(TEMP_USER_LOGIN);
