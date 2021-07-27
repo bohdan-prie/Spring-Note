@@ -126,7 +126,7 @@ function collectToDoLineData() {
 	var ToDoLineId = currentObj.id;
 	var containerToDo = document.getElementById('noteText');
 	var title = removeAllTags(document.getElementById('titleText').value);
-	
+
 	const toDo = collectToDoData();
 	var ToDoLine = {
 			'id' : ToDoLineId,
@@ -138,7 +138,7 @@ function collectToDoLineData() {
 
 function collectToDoData() {
 	var containerToDo = document.getElementById('noteText');
-	
+
 	const toDo = [];
 	for(var i = 0; i < containerToDo.childElementCount; i++) {
 		var toDoElems = {
@@ -171,18 +171,15 @@ function saveNote() {
 	var data;
 	var url = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
 
-    var xhr = new XMLHttpRequest();
-
 	if (url == "notes") {
-	    xhr.open("POST", url + "/saveNote", true);
 		data = collectNoteData();
 	} else if (url == "toDos") {
-	    xhr.open("POST", url + "/saveToDo", true);
 		data = collectToDoLineData();
 	}
 
 	var json = JSON.stringify(data);
-
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url + "save", true);
 	xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
 	xhr.send(json);
 
@@ -193,7 +190,7 @@ function saveNote() {
 	} else if (url == "toDos") {
 		addToDoLineToPage(currentObj.id, document.getElementById('titleText').value, collectToDoData());
 	}
-	
+
 	currentObj = document.getElementById(currentObj.id);
 }
 
