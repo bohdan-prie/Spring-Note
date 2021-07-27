@@ -4,62 +4,59 @@ import com.example.demo.entity.AbstractTextContainer;
 import com.example.demo.entity.Note;
 import com.example.demo.entity.ToDoLine;
 import com.example.demo.service.TextService;
+import com.example.demo.service.impl.NoteService;
+import com.example.demo.service.impl.ToDoLineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = {"/notes", "/toDos"})
-public class TextController {
+@RequestMapping(path = {"/toDos"})
+public class ToDosController {
 
     private final static String TEMP_USER_LOGIN = "999";
 
-    private final TextService textService;
+    private final ToDoLineService service;
 
     @Autowired
-    public TextController(TextService textService) {
-        this.textService = textService;
+    public ToDosController(ToDoLineService service) {
+        this.service = service;
     }
 
     @GetMapping(path = "/all")
     public List<? extends AbstractTextContainer> getAll() {
-        return textService.getAll(TEMP_USER_LOGIN);
+        return service.getAll(TEMP_USER_LOGIN);
     }
 
     @GetMapping(path = "/sortedCreation")
     public List<? extends AbstractTextContainer> sortedByCreation(){
-        return textService.getSortedByCreation(TEMP_USER_LOGIN);
+        return service.getSortedByCreation(TEMP_USER_LOGIN);
     }
 
     @GetMapping(params = {"q"})
     public List<? extends AbstractTextContainer> searchByPattern(@RequestParam String q) {
-        return textService.searchByPattern(TEMP_USER_LOGIN ,q);
+        return service.searchByPattern(TEMP_USER_LOGIN ,q);
     }
 
     @PostMapping
     public String add() {
-        AbstractTextContainer textContainer = textService.create(TEMP_USER_LOGIN);
+        AbstractTextContainer textContainer = service.create(TEMP_USER_LOGIN);
         return textContainer.getId();
     }
 
-    @PostMapping(path = "/saveNote")
-    public void saveNote(@RequestBody Note note) {
-        textService.change(note, TEMP_USER_LOGIN);
-    }
-
-    @PostMapping(path = "/saveToDo")
+    @PostMapping(path = "/save")
     public void saveToDoLine(@RequestBody ToDoLine toDoLine) {
-        textService.change(toDoLine, TEMP_USER_LOGIN);
+        service.change(toDoLine, TEMP_USER_LOGIN);
     }
 
     @DeleteMapping
     public void deleteAll() {
-        textService.deleteAll(TEMP_USER_LOGIN);
+        service.deleteAll(TEMP_USER_LOGIN);
     }
 
     @DeleteMapping(params = {"id"})
     public void delete(@RequestParam String id) {
-        textService.deleteById(id);
+        service.deleteById(id);
     }
 }
