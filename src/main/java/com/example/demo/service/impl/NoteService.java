@@ -6,9 +6,11 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.NoteRepository;
 import com.example.demo.service.TextService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class NoteService implements TextService {
 
     private final NoteRepository repository;
