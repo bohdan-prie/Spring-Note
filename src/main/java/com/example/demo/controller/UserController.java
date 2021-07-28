@@ -41,7 +41,7 @@ public class UserController {
         }
     }
 
-    @PutMapping(params = {"login"})
+    @PutMapping(params = {"newLogin"})
     public void changeLogin(@RequestParam String newLogin) {
         userService.changeLogin(TEMP_USER_LOGIN, newLogin);
     }
