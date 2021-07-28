@@ -277,7 +277,6 @@ function deleteNote() {
 function getCookie(cookie){
     let cookies = document.cookie;
     let needed = cookies.split(cookie + "=")[1];
-    alert(needed);
     return needed.split(';')[0];
 }
 
@@ -285,7 +284,6 @@ function validate() {
     var urlValidate = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
 	var login = document.getElementById('login');
 	var password = document.getElementById('password');
-	let XSRF_TOKEN = getCookie('XSRF-TOKEN');
 
 	iframe = window.top.document.getElementById('log');
 
@@ -306,7 +304,7 @@ function validate() {
             data = data.replace( '/%20/g', '+' );
 
 			xhr.open("POST", url, true);
-			xhr.setRequestHeader('X-XSRF-TOKEN', XSRF_TOKEN);
+			xhr.setRequestHeader('X-XSRF-TOKEN', getCookie('XSRF-TOKEN'));
 			xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded; charset=utf-8' );
 			xhr.send(data);
 
@@ -314,9 +312,7 @@ function validate() {
 				if (this.readyState != 4)
 					return;
 
-				if (this.status == 201) {
-					window.top.location.href = "/"
-				} else if (this.status == 401) {
+				if (this.status == 401) {
 					login.style.border = "3px solid #000";
 					password.style.border = "3px solid #F50000";
 
@@ -422,7 +418,8 @@ function changeLogin() {
 		var xhr = new XMLHttpRequest();
 		var url = "/user";
 
-		xhr.open("PUT", url + "?login=" + login.value, true);
+		xhr.open("PUT", url + "?newLogin=" + login.value, true);
+		xhr.setRequestHeader('X-XSRF-TOKEN', getCookie('XSRF-TOKEN'));
 		xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
 		xhr.send(null);
 
@@ -453,6 +450,7 @@ function changePassword() {
 	var url = "/user";
 
 	xhr.open("POST", url + "?password=" + oldPassword.value, true);
+	xhr.setRequestHeader('X-XSRF-TOKEN', getCookie('XSRF-TOKEN'));
 	xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
 	xhr.responseText = 'text';
 	xhr.send(null);
@@ -484,6 +482,7 @@ function changePassword() {
 					var url = "/user";
 
 					xhr.open("PUT", url + "?password=" + newPassword.value, true);
+					xhr.setRequestHeader('X-XSRF-TOKEN', getCookie('XSRF-TOKEN'));
 					xhr.send(null);
 
 					xhr.onreadystatechange = function() {
@@ -507,20 +506,11 @@ function changePassword() {
 
 function exit() {
 	var xhr = new XMLHttpRequest();
-	var url = "/profile";
+	var url = "/logout";
 
-	xhr.open("POST", url + "?action=exit", true);
-	xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
+	xhr.open("POST", url, true)
+	xhr.setRequestHeader('X-XSRF-TOKEN', getCookie('XSRF-TOKEN'));
 	xhr.send(null);
-
-	xhr.onreadystatechange = function() {
-		if (this.readyState != 4)
-			return;
-
-		if (this.status == 200) {
-			window.location.href = "/"
-		}
-	};
 }
 
 function getAllNotes() {
