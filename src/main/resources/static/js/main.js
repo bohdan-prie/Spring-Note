@@ -274,27 +274,41 @@ function deleteNote() {
 	xhr.send(null);
 }
 
-function validate() {
+function getCookie(cookie){
+    let cookies = document.cookie;
+    let needed = cookies.split(cookie + "=")[1];
+    alert(needed);
+    return needed.split(';')[0];
+}
 
+function validate() {
+    var urlValidate = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
 	var login = document.getElementById('login');
 	var password = document.getElementById('password');
-	iframe = window.top.document.getElementById('log').children[0];
+	let XSRF_TOKEN = getCookie('XSRF-TOKEN');
+
+	iframe = window.top.document.getElementById('log');
 
 	if (login.value != "") {
 		if (password.value.length < 8) {
-			iframe.style.height = '320px';
+		    if(urlValidate == ""){
+			    iframe.children[0].style.height = '320px';
+			}
 			login.style.border = "3px solid #000";
 			addMessage('message_place', 'Length is less than 8 symbols',
 					'#F50000');
 			password.style.border = "3px solid #F50000";
 		} else {
 			var xhr = new XMLHttpRequest();
-			var url = "/user";
+			var url = "/login";
+            let data = "username=" + login.value + "&password=" + password.value;
 
-			xhr.open("POST", url + "?login=" + login.value + "&password="
-					+ password.value, true);
-			xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
-			xhr.send(null);
+            data = data.replace( '/%20/g', '+' );
+
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader('X-XSRF-TOKEN', XSRF_TOKEN);
+			xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded; charset=utf-8' );
+			xhr.send(data);
 
 			xhr.onreadystatechange = function() {
 				if (this.readyState != 4)
@@ -307,16 +321,18 @@ function validate() {
 					password.style.border = "3px solid #F50000";
 
 					addMessage('message_place', 'Wrong password', '#F50000');
-					iframe = window.top.document.getElementById('log').children[0];
-					iframe.style.height = '320px';
+					if(urlValidate == "") {
+                    	window.top.document.getElementById('log').children[0].style.height = '320px';;
+                    }
 				} else if (this.status == 404) {
 					login.style.border = "3px solid #F50000";
 					password.style.border = "3px solid #000";
 
 					addMessage('message_place', 'No user with this login',
 							'#F50000');
-					iframe = window.top.document.getElementById('log').children[0];
-					iframe.style.height = '320px';
+					if(urlValidate == "") {
+                         window.top.document.getElementById('log').children[0].style.height = '320px';;
+                    }
 				}
 			};
 		}
